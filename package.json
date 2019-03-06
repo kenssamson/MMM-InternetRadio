@@ -1,0 +1,27 @@
+{
+  "name": "mmm-internetradio",
+  "version": "1.0.0",
+  "description": "A module for Magic Mirror playing internet radio.",
+  "main": "MMM-InternetRadio.js",
+  "dependencies": {
+    "puppeteer": "1.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aruta79/MMM-InternetRadio.git"
+  },
+  "keywords": [
+    "internetradio",
+	"touch"
+  ],
+  "author": "Artur Guja",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Aruta79/MMM-InternetRadio/issues"
+  },
+  "homepage": "https://github.com/Aruta79/MMM-InternetRadio#readme"
+}

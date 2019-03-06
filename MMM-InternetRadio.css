@@ -1,0 +1,40 @@
+.MMM-InternetRadio {
+	text-align: center;	
+}
+
+.MMM-InternetRadio_player{
+    margin : auto;
+    width: 250px;
+    display: block;
+	text-align: center;
+}
+
+.MMM-InternetRadio_cover-container{
+    margin : auto;
+	text-align: center;			
+}
+
+.MMM-InternetRadio_text-container{
+}
+
+.MMM-InternetRadio_cover{
+    margin : auto;
+	text-align: center;			
+    width:250px;
+    height:250px;
+}
+
+.MMM-InternetRadio_init{
+    font-size:28px;
+    font-weight: bold;
+    margin: 0;
+}
+    
+.MMM-InternetRadio_title{
+    font-size:20px;
+    font-weight: bold;
+}
+
+.MMM-InternetRadio_artist{
+    font-size:20px;
+}
