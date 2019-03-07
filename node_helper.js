@@ -17,14 +17,20 @@ module.exports = NodeHelper.create({
 		self.ErrorPlaying = false;
 		self.closed = false;
 		self.oldTitle = "";
+		self.station = 0;
 	},
 
 	socketNotificationReceived: function(notification, payload) {
-		console.error("Notification: " + notification); 
+		console.log("Notification: " + notification); 
 		self.closed = false;
 		switch(notification){
 			case("CONFIG"):
 				self.config = payload;
+				LoadMusicPage();
+				break;
+			case("StationSwitch"):
+				self.station = payload;
+				closeBrowser(false);
 				LoadMusicPage();
 				break;
 			case("PLAY"):
@@ -77,7 +83,7 @@ async function closeBrowser(stop){
 
 async function LoadMusicPage(){
 	try{
-		console.error("Loading..."); 
+		console.log("Loading station " + self.station + ": " + self.config.stations[self.station].name + " from " + self.config.stations[self.station].url); 
 		if(self.config.chromiumPath != null){
 			self.browser = await puppeteer.launch({ executablePath: self.config.chromiumPath, ignoreDefaultArgs: ['--mute-audio'], headless : !self.config.showBrowser }); // headless : false
 		}else{
@@ -88,11 +94,14 @@ async function LoadMusicPage(){
 		
 		await self.page.setDefaultNavigationTimeout(120000);
 		//await page.setViewport({width:200, height:80});
-		await self.page.goto("https://www.rmfon.pl/play,7");
+		await self.page.goto(self.config.stations[self.station].url);				//"https://www.rmfon.pl/play,7");
 		self.sendSocketNotification("LogIn", "");
-		await self.page.waitForSelector('#footer');
+		if (self.config.stations[self.station].footerWait != '') {
+			await self.page.waitForSelector(self.config.stations[self.station].footerWait);
+		}
+
 		self.sendSocketNotification("Ready", "");
-		console.error("ready to play music");
+		console.log("ready to play music");
 		// await page.waitFor('.is-highlight')
 		self.loggedIn = true;
 		updateInfos();
@@ -100,13 +109,14 @@ async function LoadMusicPage(){
 				Artist: self.artist,
 				Title: self.title,
 				CoverLink: self.coverLink,
+				Station: self.station,
 		});
 		self.oldTitle = self.title;
 
 		self.playingMusic = true;
 		update();
 		self.sendSocketNotification("Playing", "");
-		console.error("playing music");
+		console.log("playing music");
 
 	}catch(error){
 		console.error(error);
@@ -123,7 +133,7 @@ async function update(){
 
 		if (self.oldTitle !== self.title)
 		{
-			console.error("Updating: " + self.artist + " - " + self.title + " - " + self.coverLink);
+			console.log("Updating: " + self.artist + " - " + self.title + " - " + self.coverLink);
 			self.sendSocketNotification("Update", {
 				Artist: self.artist,
 				Title: self.title,
@@ -147,11 +157,15 @@ async function playMusic (){
 			if(!self.loggedIn){
 				await LoadMusicPage();
 			}
-			await self.page.evaluate(()=>document.querySelector('#player-icon').click());
+
+			await self.page.evaluate(function (path) {
+				document.querySelector(path).click();
+			}, self.config.stations[self.station].playPath);
+
 			self.playingMusic = true;
 			update();
 			self.sendSocketNotification("Playing", "");
-			console.error("playing music");
+			console.log("playing music");
 		}   
 	}catch(error){
 		console.error(error);
@@ -165,10 +179,14 @@ async function pauseMusic (){
 			if(!self.loggedIn){
 				await LoadMusicPage();
 			}
-			await self.page.evaluate(()=>document.querySelector('#player-icon').click());  // yep, the same as playMusic()
+			
+			await self.page.evaluate(function (path) {
+				document.querySelector(path).click();
+			}, self.config.stations[self.station].pausePath);
+			
 			self.playingMusic = false;
 			self.sendSocketNotification("Paused", "");
-			console.error("pause music");
+			console.log("pause music");
 		}  
 	}catch(error){
 		console.error(error);
@@ -181,13 +199,36 @@ async function updateInfos(){
 		await LoadMusicPage();
 	}
 	try{
-		self.title = await self.page.evaluate(()=>document.querySelector('#content > #player-box-container > div > #player-box > #player-infos > div > #player-texts > #now-playing > div.title').textContent);
-		//console.error("got title: " + self.title); 
-		self.artist = await self.page.evaluate(()=>document.querySelector('#content > #player-box-container > div > #player-box > #player-infos > div > #player-texts > #now-playing > div.artist').textContent); //a.track-link:nth-child(2)
-		//console.error("got artist: " + self.artist); 
-		self.coverLink = await self.page.evaluate(()=>document.querySelector('#content > #player-box-container > div > #player-box > #player-infos > div > #cover-container > #cover > img').getAttribute('src'));
-		//console.error("got cover: " + self.coverLink); 
+		//console.log("Station infos: " + self.config.stations[self.station]);
+
+		if (self.config.stations[self.station].titlePath != '')
+		{
+			self.title = await self.page.evaluate(function (path) { 
+					return document.querySelector(path).textContent; 
+			}, self.config.stations[self.station].titlePath);
+		} else {
+			self.title = '';
+		}
+
+		if (self.config.stations[self.station].artistPath != '')
+		{
+			self.artist = await self.page.evaluate(function (path) { 
+					return document.querySelector(path).textContent; 
+			}, self.config.stations[self.station].artistPath);
+		} else {
+			self.artist = '';
+		}
+
+		if (self.config.stations[self.station].coverPath != '') {
+			self.coverLink = await self.page.evaluate(function (path) { 
+					return document.querySelector(path).getAttribute('src'); 
+			}, self.config.stations[self.station].coverPath);
+		} else {
+			self.coverLink = '';
+		}
+
 	}catch(error){
+		console.error(error);
 		self.sendSocketNotification("Error", "");
 		self.ErrorPlaying = true;
 		return;

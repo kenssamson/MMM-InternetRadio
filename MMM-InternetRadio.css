@@ -1,27 +1,25 @@
 .MMM-InternetRadio {
-	text-align: center;	
-}
-
-.MMM-InternetRadio_player{
-    margin : auto;
-    width: 250px;
-    display: block;
 	text-align: center;
 }
 
+.MMM-InternetRadio_player{
+    margin: 0 auto;
+    width: 100%;
+    display: block;
+}
+
 .MMM-InternetRadio_cover-container{
-    margin : auto;
-	text-align: center;			
+    margin:0 auto;
 }
 
 .MMM-InternetRadio_text-container{
 }
 
 .MMM-InternetRadio_cover{
-    margin : auto;
+    margin: 0 auto;
 	text-align: center;			
-    width:250px;
-    height:250px;
+    width: 300px;
+    height: 300px;
 }
 
 .MMM-InternetRadio_init{
@@ -37,4 +35,26 @@
 
 .MMM-InternetRadio_artist{
     font-size:20px;
+}
+
+.MMM-InternetRadio_stations {
+    margin: 0 auto;
+	display: table;
+}
+
+.MMM-InternetRadio_stationInfo, .MMM-InternetRadio_stationInfoHighlight {
+  display: table-cell;
+  border-radius: 15px;
+  border: 2px solid white;
+  padding: 1px; 
+  width: 150px;
+  font-size:13px;
+  margin: 0 auto;
+}
+
+.MMM-InternetRadio_stationInfoHighlight {
+  font-weight: bold;
+  font-size: 14px;
+  border: double white;
+  background-color: rgba(80, 80, 80, 0.7);
 }

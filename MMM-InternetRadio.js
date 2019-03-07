@@ -1,3 +1,8 @@
+/*
+	#TODO: make login at startup and page load separate
+
+*/
+
 Module.register("MMM-InternetRadio",{
 	
 	defaults:{
@@ -6,13 +11,23 @@ Module.register("MMM-InternetRadio",{
 		stations: [
 			{
 				name: "RMF Classic",
-				loadLink: "https://www.rmfon.pl/play,7",
+				url: "https://www.rmfon.pl/play,7",
 				titlePath: '#content > #player-box-container > div > #player-box > #player-infos > div > #player-texts > #now-playing > div.title',
 				artistPath: '#content > #player-box-container > div > #player-box > #player-infos > div > #player-texts > #now-playing > div.artist',
 				coverPath: '#content > #player-box-container > div > #player-box > #player-infos > div > #cover-container > #cover > img',
 				playPath: '#player-icon',
 				pausePath: '#player-icon',
-				footerWait: '#footer'
+				footerWait: '#footer',
+			},
+			{
+				name: "Encore",
+				url: "https://www.encoreradio.co.uk/radioplayer/",
+				titlePath: 'div > div > div > div > div > div > #live-strip > div > div > div > div.scrolling-text-now > span.song-text',
+				artistPath: 'div > div > div > div > div > div > #live-strip > div > div > div > div.scrolling-text-now > span.song-text',
+				coverPath: '',
+				playPath: '#play-controls > button#play',
+				pausePath: '#play-controls > button#stop',
+				footerWait: '',
 			},
 		]
 	},
@@ -33,15 +48,42 @@ Module.register("MMM-InternetRadio",{
 	},
 	
 	getDom: function(){
+		var self = this;
+
+		function makeStationOnClickHandler(a) {
+			return function () {
+				self.sendSocketNotification('StationSwitch', a);
+			};
+		}
+
 		var wrapper = document.createElement("div");
 		try
 		{
 			if(!this.closed){
-				wrapper.className = "bright MMM-InternetRadio";
+				wrapper.className = "MMM-InternetRadio";
 
 				var playerNode = document.createElement("div");
 				playerNode.className = 'MMM-InternetRadio_player';
 				wrapper.appendChild(playerNode);
+
+				var stationsContainer =  document.createElement("div");
+				stationsContainer.className = 'MMM-InternetRadio_stations';
+				playerNode.appendChild(stationsContainer);
+
+				self.config.stations.forEach(function(station) {
+					var stationNode =  document.createElement("div");
+					stationNode.className = 'MMM-InternetRadio_stationInfo';
+					if (this.config.stations[this.Station] != undefined && station.name == this.config.stations[this.Station].name)
+					{
+						stationNode.className += "Highlight bright";
+					} else {
+						stationNode.className += " dimmed";
+					}
+
+					stationNode.appendChild(document.createTextNode(station.name));
+					stationsContainer.appendChild(stationNode);
+					stationNode.onclick = makeStationOnClickHandler(self.config.stations.indexOf(station));
+				}, self);
 
 				var containerNode =  document.createElement("div");
 				containerNode.className = 'MMM-InternetRadio_text-container';
@@ -123,6 +165,7 @@ Module.register("MMM-InternetRadio",{
 				this.Artist = (payload.Artist !== "") ? payload.Artist : "No artist";
 				this.Title = (payload.Title !== "") ? payload.Title : "No title";
 				this.CoverLink = payload.CoverLink;
+				this.Station = payload.Station;
 				break;
 			case("Error"):
 				this.Title = "Problem getting data";
