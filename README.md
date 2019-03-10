@@ -56,7 +56,7 @@ Additional stations can be configured using the following syntax:
 				playPath: '#player-icon',
 				pausePath: '#player-icon',
 				footerWait: '#footer',
-			},
+			}],
 ```
 - **name** - name of station
 - **url** - link to "Listen live" or similar page that actually plays the sound
