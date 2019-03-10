@@ -1,7 +1,6 @@
 # MMM-InternetRadio
 MagicMirror module for playing internet radio
 
-=======
 This module is based on the idea of using [puppeteer](https://pptr.dev/) taken from (MMM-MusicOnDemand)[https://forum.magicmirror.builders/topic/9666/mmm-musicondemand-play-music-from-deezer-with-a-browser-in-the-background].
 
 It allows you yo configure most Internet Radio stations using selectors for items on the page to pick up:
