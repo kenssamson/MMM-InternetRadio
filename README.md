@@ -1,7 +1,7 @@
 # MMM-InternetRadio
 MagicMirror module for playing internet radio
 
-This module is based on the idea of using [puppeteer](https://pptr.dev/) taken from (MMM-MusicOnDemand)[https://forum.magicmirror.builders/topic/9666/mmm-musicondemand-play-music-from-deezer-with-a-browser-in-the-background].
+This module is based on the idea of using [puppeteer](https://pptr.dev/) taken from [MMM-MusicOnDemand](https://forum.magicmirror.builders/topic/9666/mmm-musicondemand-play-music-from-deezer-with-a-browser-in-the-background).
 
 It allows you yo configure most Internet Radio stations using selectors for items on the page to pick up:
  - artist and title of what's currently playing
@@ -68,4 +68,4 @@ The module also has two icons to control volume, sending **VOLUME_UP** and **VOL
 
 ## Troubleshooting
 
-See (MMM-MusicOnDemand)[https://forum.magicmirror.builders/topic/9666/mmm-musicondemand-play-music-from-deezer-with-a-browser-in-the-background] for info about using _puppeteer_ and _chromium_.
+See [MMM-MusicOnDemand](https://forum.magicmirror.builders/topic/9666/mmm-musicondemand-play-music-from-deezer-with-a-browser-in-the-background) for info about using _puppeteer_ and _chromium_.
