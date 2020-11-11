@@ -4,7 +4,7 @@
   "description": "A module for Magic Mirror playing internet radio.",
   "main": "MMM-InternetRadio.js",
   "dependencies": {
-    "puppeteer": "1.11.0"
+    "puppeteer": "1.13.0"
   },
   "devDependencies": {},
   "scripts": {
